@@ -1,0 +1,38 @@
+# solr:
+#   image: solr:5.5.0
+#   ports:
+#     - "8983:8983"
+version: "2"
+volumes:
+  elastic-data:
+    driver: local
+services:
+  elasticsearch:
+    build: docker-elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    restart: always
+    environment:
+      ES_MIN_MEM: 48m
+      ES_HEAP_NEWSIZE: 128m
+      ES_MAX_MEM: 256m
+    volumes:
+      - elastic-data:/usr/share/elasticsearch/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  sense:
+    image: serandel/kibana-sense
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    # links:
+    #   - elasticsearch
