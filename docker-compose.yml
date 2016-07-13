@@ -8,7 +8,7 @@ volumes:
     driver: local
 services:
   elasticsearch:
-    build: docker-elasticsearch
+    build: hello
     ports:
       - "9200:9200"
       - "9300:9300"
